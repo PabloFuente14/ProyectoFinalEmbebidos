@@ -8,8 +8,8 @@ import MySQLdb
 
 #contador = 0
 
-
 reader = SimpleMFRC522()
+GPIO.setwarnings(False)
 GPIO.cleanup()
 
 
@@ -19,6 +19,11 @@ cur = db.cursor()
 query = "TRUNCATE TABLE Contador"
 cur.execute(query)
 db.commit()
+
+def buzz(duration):    
+    GPIO.output(22, GPIO.HIGH)
+    time.sleep(duration)
+    GPIO.output(22, GPIO.LOW)
 
 def rfid():    
     contador = 0
@@ -46,6 +51,7 @@ def rfid():
         query = "INSERT INTO Contador (contador) VALUES (%s)"
         cur.execute(query, (contador,))
         db.commit()
+        
     
     
 def temp_hum():
@@ -62,7 +68,47 @@ def temp_hum():
         
         cur.execute('''INSERT INTO Temp_Hum(humidity, temperature) VALUES(%s,%s);''',(humidity,temperature))
         db.commit()
+        
+        
+        if humidity > 90:
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(22, GPIO.OUT)
+            pwm = GPIO.PWM(22, 500)
+        # reproducir la melodía de alarma sencilla durante 10 segundos
+            for note in notes:
+                frequency, duration = note
+                pwm.start(50)
+                pwm.ChangeFrequency(frequency)
+                buzz(duration / 1000.0)
+                pwm.stop()
+            time.sleep(1)
+            
+        if temperature > 30:
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(22, GPIO.OUT)
+            pwm = GPIO.PWM(22, 500)
+        # reproducir la melodía de alarma sencilla durante 10 segundos
+            for note in notes:
+                frequency, duration = note
+                pwm.start(50)
+                pwm.ChangeFrequency(frequency)
+                buzz(duration / 1000.0)
+                pwm.stop()
+            time.sleep(1)
     
+notes = [
+    (523, 500),
+    (659, 500),
+    (523, 500),
+    (659, 500),
+    (523, 500),
+    (659, 500),
+    (523, 500),
+    (659, 500),
+ 
+]
+
+
 if __name__ == '__main__':
     
     #Creamos los hilos
