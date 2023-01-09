@@ -27,20 +27,24 @@ def buzz(duration):
 
 def rfid():    
     contador = 0
+    persona = 'Persona'
     #CODIGO de la tarjeta rfid
     while True:
         id , text = reader.read()
         if id == 1002848969990:
             contador += 1
+            persona = 'Victor'
             print('Accediendo con la tarjeta')
-            
+            print('Bienvenido',persona)
             print('contador: ',contador)
             print('------------------')
             time.sleep(1)  
     
         if id == 649130914353:
             contador += 1
+            persona = 'Pablo'
             print('Accediendo con el llavero')
+            print('Bienvenido',persona)
             #print('------------------')
             print('Contador: ',contador)
             print('------------------')
@@ -52,6 +56,9 @@ def rfid():
         cur.execute(query, (contador,))
         db.commit()
         
+        query = "INSERT INTO Contador (persona) VALUES (%s)"
+        cur.execute(query, (persona,))
+        db.commit()
     
     
 def temp_hum():
