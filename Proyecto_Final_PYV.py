@@ -52,13 +52,10 @@ def rfid():
 
         
         
-        query = "INSERT INTO Contador (contador) VALUES (%s)"
-        cur.execute(query, (contador,))
+        query = "INSERT INTO Contador (contador, Persona) VALUES (%s, %s)"
+        cur.execute(query, (contador, persona))
         db.commit()
-        
-        query = "INSERT INTO Contador (persona) VALUES (%s)"
-        cur.execute(query, (persona,))
-        db.commit()
+    
     
     
 def temp_hum():
